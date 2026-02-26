@@ -90,6 +90,19 @@ Future<void> initDependencies({bool firebaseInitialized = false}) async {
       remoteDs: sl(),
       localDs: sl(),
       networkInfo: sl(),
+      notificationService: sl(),
+    ),
+  );
+
+  // Sync service
+  sl.registerLazySingleton<SyncService>(
+    () => SyncService(
+      apiClient: sl(),
+      localDs: sl(),
+      networkInfo: sl(),
+      prefs: sl(),
+      connectivity: sl(),
+      notificationService: sl(),
     ),
   );
 

@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/datasources/local/task_local_ds.dart';
 import '../../data/models/care_task_model.dart';
 import '../constants/api_endpoints.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
+import 'notification_service.dart';
 
 const _kLastSyncAt = 'fc_last_sync';
 
@@ -18,7 +18,7 @@ class SyncService {
   final TaskLocalDataSource _localDs;
   final NetworkInfo _networkInfo;
   final SharedPreferences _prefs;
-  final FlutterLocalNotificationsPlugin? _localNotifications;
+  final NotificationService _notificationService;
   final Connectivity _connectivity;
 
   Timer? _periodicTimer;
@@ -34,13 +34,13 @@ class SyncService {
     required NetworkInfo networkInfo,
     required SharedPreferences prefs,
     required Connectivity connectivity,
-    FlutterLocalNotificationsPlugin? localNotifications,
+    required NotificationService notificationService,
   })  : _apiClient = apiClient,
         _localDs = localDs,
         _networkInfo = networkInfo,
         _prefs = prefs,
         _connectivity = connectivity,
-        _localNotifications = localNotifications;
+        _notificationService = notificationService;
 
   /// Start periodic sync (every 5 minutes) and connectivity listener.
   void start() {
@@ -146,40 +146,39 @@ class SyncService {
     }
   }
 
-  /// Schedule local notifications for pending tasks due within 24 hours.
+  /// Schedule local reminder notifications for pending tasks due within 24 hours.
+  /// Each reminder fires 10 minutes before the task's scheduledAt time.
+  /// Completed/missed tasks have their reminders cancelled.
   Future<void> _scheduleTaskNotifications(List<CareTaskModel> tasks) async {
-    if (_localNotifications == null) return;
-
     final now = DateTime.now();
     final cutoff = now.add(const Duration(hours: 24));
+    final reminderOffset = const Duration(minutes: 10);
 
     for (final task in tasks) {
-      if (task.status.name != 'pending') continue;
+      // Cancel reminders for non-pending tasks
+      if (task.status.name != 'pending') {
+        await _notificationService.cancelTaskReminder(task.id);
+        continue;
+      }
+
       if (task.scheduledAt.isBefore(now) || task.scheduledAt.isAfter(cutoff)) {
         continue;
       }
 
-      // Use task hashCode as notification ID to avoid duplicates
-      final notifId = task.id.hashCode;
+      final reminderTime = task.scheduledAt.subtract(reminderOffset);
+      // Only schedule if reminder time is still in the future
+      if (reminderTime.isBefore(now)) continue;
+
       final careLabel = task.careType.name[0].toUpperCase() +
           task.careType.name.substring(1);
-      final title = '$careLabel Due — ${task.batchName ?? 'Plant Care'}';
-      final body = task.instructions ?? 'Task scheduled';
+      final title = 'Reminder: $careLabel in 10 min — ${task.batchName ?? 'Plant Care'}';
+      final body = task.instructions ?? 'Upcoming care task';
 
-      await _localNotifications.show(
-        notifId,
-        title,
-        body,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'care_tasks',
-            'Care Tasks',
-            importance: Importance.high,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(),
-        ),
-        payload: '{"taskId": "${task.id}"}',
+      await _notificationService.scheduleTaskReminder(
+        taskId: task.id,
+        title: title,
+        body: body,
+        scheduledTime: reminderTime,
       );
     }
   }

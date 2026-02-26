@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 import '../constants/api_endpoints.dart';
 import '../network/api_client.dart';
 
@@ -73,6 +74,18 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
+
+    // Create reminder notification channel
+    const reminderChannel = AndroidNotificationChannel(
+      'care_task_reminders',
+      'Task Reminders',
+      description: 'Advance reminders for upcoming care tasks',
+      importance: Importance.high,
+    );
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(reminderChannel);
 
     // FCM foreground messages
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
@@ -185,6 +198,59 @@ class NotificationService {
         onNotificationTap!(taskId);
       }
     } catch (_) {}
+  }
+
+  // ─── Scheduled task reminders ───
+
+  /// Schedule a local notification at a specific time (for offline task reminders).
+  /// Uses [taskId.hashCode] as notification ID for deduplication.
+  Future<void> scheduleTaskReminder({
+    required String taskId,
+    required String title,
+    required String body,
+    required DateTime scheduledTime,
+  }) async {
+    if (_localNotifications == null) return;
+
+    final tzTime = tz.TZDateTime.from(scheduledTime, tz.local);
+    if (tzTime.isBefore(tz.TZDateTime.now(tz.local))) return;
+
+    try {
+      await _localNotifications.zonedSchedule(
+        taskId.hashCode,
+        title,
+        body,
+        tzTime,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'care_task_reminders',
+            'Task Reminders',
+            channelDescription: 'Advance reminders for upcoming care tasks',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: jsonEncode({'taskId': taskId}),
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule reminder for task $taskId: $e');
+    }
+  }
+
+  /// Cancel a scheduled reminder for a specific task.
+  Future<void> cancelTaskReminder(String taskId) async {
+    if (_localNotifications == null) return;
+    await _localNotifications.cancel(taskId.hashCode);
+  }
+
+  /// Cancel all scheduled reminders.
+  Future<void> cancelAllScheduledReminders() async {
+    if (_localNotifications == null) return;
+    await _localNotifications.cancelAll();
   }
 
   // ─── Local notification storage ───

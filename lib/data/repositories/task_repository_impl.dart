@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../core/errors/exceptions.dart';
 import '../../core/errors/failures.dart';
 import '../../core/network/network_info.dart';
+import '../../core/services/notification_service.dart';
 import '../../domain/entities/care_task.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../datasources/local/task_local_ds.dart';
@@ -17,14 +18,17 @@ class TaskRepositoryImpl implements TaskRepository {
   final TaskRemoteDataSource _remoteDs;
   final TaskLocalDataSource _localDs;
   final NetworkInfo _networkInfo;
+  final NotificationService _notificationService;
 
   const TaskRepositoryImpl({
     required TaskRemoteDataSource remoteDs,
     required TaskLocalDataSource localDs,
     required NetworkInfo networkInfo,
+    required NotificationService notificationService,
   })  : _remoteDs = remoteDs,
         _localDs = localDs,
-        _networkInfo = networkInfo;
+        _networkInfo = networkInfo,
+        _notificationService = notificationService;
 
   @override
   Future<Either<Failure, List<CareTask>>> getTodayTasks() async {
@@ -70,6 +74,9 @@ class TaskRepositoryImpl implements TaskRepository {
   }) async {
     // Always update local DB immediately for instant UI feedback
     final localTask = await _localDs.completeTaskLocally(id, notes: notes);
+
+    // Cancel any scheduled local notification for this task
+    await _notificationService.cancelTaskReminder(id);
 
     if (await _networkInfo.isConnected) {
       try {

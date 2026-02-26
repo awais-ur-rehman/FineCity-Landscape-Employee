@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/datasources/local/auth_local_ds.dart';
+import '../../data/datasources/local/local_database.dart';
 import '../../data/datasources/local/task_local_ds.dart';
 import '../../data/datasources/remote/auth_remote_ds.dart';
 import '../../data/datasources/remote/task_remote_ds.dart';
@@ -22,6 +23,7 @@ import '../../presentation/settings/cubit/settings_cubit.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../services/notification_service.dart';
+import '../services/sync_service.dart';
 
 final sl = GetIt.instance;
 
@@ -31,6 +33,9 @@ Future<void> initDependencies({bool firebaseInitialized = false}) async {
   final prefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => prefs);
   sl.registerLazySingleton<Connectivity>(() => Connectivity());
+
+  // Local database
+  sl.registerLazySingleton<LocalDatabase>(() => LocalDatabase());
 
   // Core
   sl.registerLazySingleton<ApiClient>(() => ApiClient(sl()));
@@ -85,6 +90,18 @@ Future<void> initDependencies({bool firebaseInitialized = false}) async {
       remoteDs: sl(),
       localDs: sl(),
       networkInfo: sl(),
+    ),
+  );
+
+  // Sync service
+  sl.registerLazySingleton<SyncService>(
+    () => SyncService(
+      apiClient: sl(),
+      localDs: sl(),
+      networkInfo: sl(),
+      prefs: sl(),
+      connectivity: sl(),
+      localNotifications: sl(),
     ),
   );
 

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'app.dart';
 import 'core/di/injection.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/sync_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,13 @@ void main() async {
     await notificationService.init();
     await notificationService.requestPermission();
   }
+
+  // Start background sync service
+  final syncService = sl<SyncService>();
+  syncService.start();
+
+  // Run initial sync
+  syncService.syncNow();
 
   runApp(const App());
 }

@@ -71,6 +71,7 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<Either<Failure, CareTask>> completeTask(
     String id, {
     String? notes,
+    List<String>? photoPaths,
   }) async {
     // Always update local DB immediately for instant UI feedback
     final localTask = await _localDs.completeTaskLocally(id, notes: notes);
@@ -80,7 +81,11 @@ class TaskRepositoryImpl implements TaskRepository {
 
     if (await _networkInfo.isConnected) {
       try {
-        final task = await _remoteDs.completeTask(id, notes: notes);
+        final task = await _remoteDs.completeTask(
+          id,
+          notes: notes,
+          photoPaths: photoPaths,
+        );
         await _localDs.upsertTasks([task]);
         return Right(task);
       } on ServerException catch (e) {
@@ -98,7 +103,7 @@ class TaskRepositoryImpl implements TaskRepository {
       }
     }
 
-    // Offline — queue for sync
+    // Offline — queue for sync (photos cannot be uploaded offline)
     if (localTask != null) {
       await _localDs.addToSyncQueue(
         taskId: id,

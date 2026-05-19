@@ -4,11 +4,8 @@ import '../entities/user.dart';
 
 /// Abstract auth repository contract.
 abstract class AuthRepository {
-  /// Sends OTP to the given email.
-  Future<Either<Failure, void>> sendOtp(String email);
-
-  /// Verifies OTP and returns authenticated user.
-  Future<Either<Failure, User>> verifyOtp(String email, String otp);
+  /// Logs in with email and password.
+  Future<Either<Failure, User>> login(String email, String password);
 
   /// Refreshes access token.
   Future<Either<Failure, void>> refreshToken();

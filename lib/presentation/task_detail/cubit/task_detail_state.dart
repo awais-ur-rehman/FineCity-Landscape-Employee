@@ -21,15 +21,32 @@ class TaskDetailLoaded extends TaskDetailState {
   final CareTask task;
   final List<CareTask> recentCompletions;
   final bool isCompleting;
+  final List<String> selectedPhotoPaths;
 
   const TaskDetailLoaded({
     required this.task,
     this.recentCompletions = const [],
     this.isCompleting = false,
+    this.selectedPhotoPaths = const [],
   });
 
+  TaskDetailLoaded copyWith({
+    CareTask? task,
+    List<CareTask>? recentCompletions,
+    bool? isCompleting,
+    List<String>? selectedPhotoPaths,
+  }) {
+    return TaskDetailLoaded(
+      task: task ?? this.task,
+      recentCompletions: recentCompletions ?? this.recentCompletions,
+      isCompleting: isCompleting ?? this.isCompleting,
+      selectedPhotoPaths: selectedPhotoPaths ?? this.selectedPhotoPaths,
+    );
+  }
+
   @override
-  List<Object?> get props => [task, recentCompletions, isCompleting];
+  List<Object?> get props =>
+      [task, recentCompletions, isCompleting, selectedPhotoPaths];
 }
 
 class TaskDetailCompleted extends TaskDetailState {

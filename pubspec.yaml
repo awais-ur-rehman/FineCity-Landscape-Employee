@@ -48,6 +48,9 @@ dependencies:
   # Notifications
   flutter_local_notifications: ^18.0.0
 
+  # Media
+  image_picker: ^1.1.2
+
   # System
   app_settings: ^5.1.1
   package_info_plus: ^8.0.0
@@ -63,7 +66,6 @@ dev_dependencies:
   build_runner: ^2.4.0
   freezed: ^2.5.0
   json_serializable: ^6.8.0
-  bloc_test: ^10.0.0
   mocktail: ^1.0.0
 
 flutter:

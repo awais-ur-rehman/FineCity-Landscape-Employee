@@ -3,14 +3,14 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   static const baseUrl =
-      'http://192.168.18.123:3000/api/v1'; // Android emulator
-  static const baseUrlIos = 'http://localhost:3000/api/v1';
+      'http://192.168.100.99:3000/api/v1'; // Android emulator
+  static const baseUrlIos = 'http://192.168.100.99:3000/api/v1';
 
   // Auth
-  static const sendOtp = '/auth/send-otp';
-  static const verifyOtp = '/auth/verify-otp';
+  static const login = '/auth/login';
   static const refreshToken = '/auth/refresh-token';
   static const logout = '/auth/logout';
+  static const changePassword = '/auth/change-password';
   static const fcmToken = '/auth/fcm-token';
 
   // Plant batches

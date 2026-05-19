@@ -9,7 +9,7 @@ import '../shared/widgets/app_text_field.dart';
 import 'cubit/auth_cubit.dart';
 import 'cubit/auth_state.dart';
 
-/// Login screen — email input + send OTP.
+/// Login screen — email + password sign in.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -19,22 +19,45 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   String? _emailError;
+  String? _passwordError;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
     _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void _onSendOtp() {
+  void _onLogin() {
     final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    String? emailErr;
+    String? passwordErr;
+
     if (email.isEmpty || !email.contains('@')) {
-      setState(() => _emailError = AppStrings.enterEmail);
+      emailErr = AppStrings.enterEmail;
+    }
+    if (password.isEmpty) {
+      passwordErr = AppStrings.enterPassword;
+    }
+
+    if (emailErr != null || passwordErr != null) {
+      setState(() {
+        _emailError = emailErr;
+        _passwordError = passwordErr;
+      });
       return;
     }
-    setState(() => _emailError = null);
-    context.read<AuthCubit>().sendOtp(email);
+
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+    });
+    context.read<AuthCubit>().login(email, password);
   }
 
   @override
@@ -73,20 +96,39 @@ class _LoginScreenState extends State<LoginScreen> {
                 const Spacer(),
                 AppTextField(
                   label: AppStrings.email,
-                  hint: AppStrings.enterEmail,
+                  hint: AppStrings.emailHint,
                   controller: _emailController,
                   errorText: _emailError,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 16),
+                AppTextField(
+                  label: AppStrings.password,
+                  hint: AppStrings.enterPassword,
+                  controller: _passwordController,
+                  errorText: _passwordError,
+                  obscureText: _obscurePassword,
                   textInputAction: TextInputAction.done,
-                  onEditingComplete: _onSendOtp,
+                  onEditingComplete: _onLogin,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
                     return AppPrimaryButton(
-                      label: AppStrings.sendOtp,
+                      label: AppStrings.signIn,
                       isLoading: state is AuthLoading,
-                      onPressed: _onSendOtp,
+                      onPressed: _onLogin,
                     );
                   },
                 ),

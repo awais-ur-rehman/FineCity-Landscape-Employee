@@ -3,17 +3,23 @@ import 'package:equatable/equatable.dart';
 /// Care type enum matching backend values.
 enum CareType {
   watering,
-  fertilizer,
+  fertilizing,
   pruning,
-  repotting,
-  general;
+  pestControl,
+  repotting;
 
   static CareType fromString(String value) {
+    // Backend sends snake_case; map pest_control → pestControl.
+    final normalized = value == 'pest_control' ? 'pestControl' : value;
     return CareType.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () => CareType.general,
+      (e) => e.name == normalized,
+      orElse: () => CareType.watering,
     );
   }
+
+  /// Returns the backend string value for this care type.
+  String get backendValue =>
+      this == CareType.pestControl ? 'pest_control' : name;
 }
 
 /// Task status enum matching backend values.
@@ -52,6 +58,7 @@ class CareTask extends Equatable {
   final String? instructions;
   final String? batchImageUrl;
   final String? scientificName;
+  final List<String> photoUrls;
 
   const CareTask({
     required this.id,
@@ -71,6 +78,7 @@ class CareTask extends Equatable {
     this.instructions,
     this.batchImageUrl,
     this.scientificName,
+    this.photoUrls = const [],
   });
 
   /// Whether this task is currently due (within 2 hours of scheduled time).
@@ -88,5 +96,5 @@ class CareTask extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, status, completedAt, notes];
+  List<Object?> get props => [id, status, completedAt, notes, photoUrls];
 }

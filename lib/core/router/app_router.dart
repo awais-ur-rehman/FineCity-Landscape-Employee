@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../presentation/auth/cubit/auth_cubit.dart';
 import '../../presentation/auth/cubit/auth_state.dart';
 import '../../presentation/auth/login_screen.dart';
-import '../../presentation/auth/otp_screen.dart';
 import '../../presentation/home/cubit/home_cubit.dart';
 import '../../presentation/home/home_screen.dart';
 import '../../presentation/notifications/notifications_screen.dart';
@@ -19,7 +18,6 @@ import '../di/injection.dart';
 class AppRoutes {
   static const splash = '/';
   static const login = '/login';
-  static const otp = '/otp';
   static const home = '/home';
   static const schedule = '/schedule';
   static const notifications = '/notifications';
@@ -41,32 +39,22 @@ GoRouter createRouter(AuthCubit authCubit) {
       final authState = authCubit.state;
       final currentPath = state.uri.path;
 
-      // While checking auth, stay on splash
+      // While checking auth, stay on splash.
       if (authState is AuthInitial || authState is AuthLoading) {
         if (currentPath != AppRoutes.splash) return AppRoutes.splash;
         return null;
       }
 
-      // Authenticated → go to home
+      // Authenticated → go to home.
       if (authState is AuthAuthenticated) {
-        if (currentPath == AppRoutes.splash ||
-            currentPath == AppRoutes.login ||
-            currentPath == AppRoutes.otp) {
+        if (currentPath == AppRoutes.splash || currentPath == AppRoutes.login) {
           return AppRoutes.home;
         }
         return null;
       }
 
-      // OTP sent → go to OTP screen
-      if (authState is AuthOtpSent) {
-        if (currentPath != AppRoutes.otp) return AppRoutes.otp;
-        return null;
-      }
-
-      // Unauthenticated or error → go to login
-      if (currentPath != AppRoutes.login && currentPath != AppRoutes.otp) {
-        return AppRoutes.login;
-      }
+      // Unauthenticated or error → go to login.
+      if (currentPath != AppRoutes.login) return AppRoutes.login;
       return null;
     },
     routes: [
@@ -77,14 +65,6 @@ GoRouter createRouter(AuthCubit authCubit) {
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.otp,
-        builder: (context, state) {
-          final authState = authCubit.state;
-          final email = authState is AuthOtpSent ? authState.email : '';
-          return OtpScreen(email: email);
-        },
       ),
 
       // Bottom nav shell

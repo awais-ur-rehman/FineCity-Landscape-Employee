@@ -7,21 +7,14 @@ class AppStrings {
 
   // Auth
   static const loginTitle = 'Welcome Back';
-  static const loginSubtitle = 'Enter your email to sign in';
+  static const loginSubtitle = 'Sign in to your account';
   static const emailHint = 'your.email@finecity.ae';
-  static const sendOtp = 'Send OTP';
-  static const otpTitle = 'Verify OTP';
-  static const otpSubtitle = 'Enter the 6-digit code sent to';
-  static const verifyOtp = 'Verify & Sign In';
-  static const resendOtp = 'Resend OTP';
-  static const otpSent = 'OTP sent to your email';
-  static const invalidOtp = 'Invalid OTP. Please try again.';
-  static const useDifferentEmail = 'Use a different email';
   static const email = 'Email';
   static const enterEmail = 'Enter your email address';
-  static const otpSentTo = 'Code sent to';
-  static const verify = 'Verify';
-  static const resendIn = 'Resend in';
+  static const password = 'Password';
+  static const enterPassword = 'Enter your password';
+  static const signIn = 'Sign In';
+  static const invalidCredentials = 'Invalid email or password';
 
   // Home
   static const goodMorning = 'Good morning';

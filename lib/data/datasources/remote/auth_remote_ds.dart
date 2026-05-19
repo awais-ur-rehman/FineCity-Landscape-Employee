@@ -6,9 +6,8 @@ import '../../models/user_model.dart';
 
 /// Remote data source for authentication.
 abstract class AuthRemoteDataSource {
-  Future<void> sendOtp(String email);
-  Future<({UserModel user, String accessToken, String refreshToken})> verifyOtp(
-      String email, String otp);
+  Future<({UserModel user, String accessToken, String refreshToken})> login(
+      String email, String password);
   Future<void> logout();
 }
 
@@ -18,37 +17,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   const AuthRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<void> sendOtp(String email) async {
+  Future<({UserModel user, String accessToken, String refreshToken})> login(
+      String email, String password) async {
     try {
       final response = await _apiClient.dio.post(
-        ApiEndpoints.sendOtp,
-        data: {'email': email},
+        ApiEndpoints.login,
+        data: {'email': email, 'password': password},
       );
       if (response.data['success'] != true) {
         throw ServerException(
-          message: response.data['message'] ?? 'Failed to send OTP',
-          statusCode: response.statusCode,
-        );
-      }
-    } on DioException catch (e) {
-      throw ServerException(
-        message: e.response?.data?['message'] ?? 'Failed to send OTP',
-        statusCode: e.response?.statusCode,
-      );
-    }
-  }
-
-  @override
-  Future<({UserModel user, String accessToken, String refreshToken})> verifyOtp(
-      String email, String otp) async {
-    try {
-      final response = await _apiClient.dio.post(
-        ApiEndpoints.verifyOtp,
-        data: {'email': email, 'otp': otp},
-      );
-      if (response.data['success'] != true) {
-        throw ServerException(
-          message: response.data['message'] ?? 'Invalid OTP',
+          message: response.data['message'] ?? 'Login failed',
           statusCode: response.statusCode,
         );
       }
@@ -60,7 +38,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data?['message'] ?? 'Verification failed',
+        message: e.response?.data?['message'] ?? 'Login failed',
         statusCode: e.response?.statusCode,
       );
     }

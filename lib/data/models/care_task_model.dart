@@ -20,6 +20,7 @@ class CareTaskModel extends CareTask {
     super.instructions,
     super.batchImageUrl,
     super.scientificName,
+    super.photoUrls,
   });
 
   factory CareTaskModel.fromJson(Map<String, dynamic> json) {
@@ -75,6 +76,9 @@ class CareTaskModel extends CareTask {
       return e as String;
     }).toList();
 
+    final photoUrlsRaw = json['photoUrls'] as List<dynamic>? ?? [];
+    final photoUrls = photoUrlsRaw.map((e) => e as String).toList();
+
     return CareTaskModel(
       id: json['_id'] as String? ?? json['id'] as String,
       scheduleId: scheduleId,
@@ -95,6 +99,7 @@ class CareTaskModel extends CareTask {
       instructions: instructions,
       batchImageUrl: batchImageUrl,
       scientificName: scientificName,
+      photoUrls: photoUrls,
     );
   }
 

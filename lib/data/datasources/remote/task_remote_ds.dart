@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../../core/constants/api_endpoints.dart';
 import '../../../core/errors/exceptions.dart';
@@ -12,8 +13,12 @@ abstract class TaskRemoteDataSource {
   /// Fetches a single task by ID.
   Future<CareTaskModel> getTaskById(String id);
 
-  /// Marks a task as completed.
-  Future<CareTaskModel> completeTask(String id, {String? notes});
+  /// Marks a task as completed. Pass [photoPaths] to upload photos.
+  Future<CareTaskModel> completeTask(
+    String id, {
+    String? notes,
+    List<String>? photoPaths,
+  });
 
   /// Fetches tasks for a specific date.
   Future<List<CareTaskModel>> getTasksForDate(DateTime date);
@@ -81,17 +86,50 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<CareTaskModel> completeTask(String id, {String? notes}) async {
+  Future<CareTaskModel> completeTask(
+    String id, {
+    String? notes,
+    List<String>? photoPaths,
+  }) async {
     try {
-      final data = <String, dynamic>{
-        'completedAt': DateTime.now().toIso8601String(),
-      };
-      if (notes != null && notes.isNotEmpty) {
-        data['notes'] = notes;
+      final hasPhotos = photoPaths != null && photoPaths.isNotEmpty;
+
+      dynamic requestData;
+      Options? options;
+
+      if (hasPhotos) {
+        // Multipart — include photos as files
+        final formData = FormData();
+        formData.fields.add(
+          MapEntry('completedAt', DateTime.now().toIso8601String()),
+        );
+        if (notes != null && notes.isNotEmpty) {
+          formData.fields.add(MapEntry('notes', notes));
+        }
+        for (final path in photoPaths) {
+          final file = File(path);
+          final filename = file.path.split('/').last;
+          formData.files.add(
+            MapEntry(
+              'photos',
+              await MultipartFile.fromFile(file.path, filename: filename),
+            ),
+          );
+        }
+        requestData = formData;
+      } else {
+        // Plain JSON
+        final data = <String, dynamic>{
+          'completedAt': DateTime.now().toIso8601String(),
+        };
+        if (notes != null && notes.isNotEmpty) data['notes'] = notes;
+        requestData = data;
       }
+
       final response = await _apiClient.dio.post(
         ApiEndpoints.completeTask(id),
-        data: data,
+        data: requestData,
+        options: options,
       );
       if (response.data['success'] != true) {
         throw ServerException(

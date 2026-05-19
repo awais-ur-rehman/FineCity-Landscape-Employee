@@ -14,8 +14,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../../domain/usecases/complete_task.dart';
 import '../../domain/usecases/get_today_tasks.dart';
-import '../../domain/usecases/send_otp.dart';
-import '../../domain/usecases/verify_otp.dart';
+import '../../domain/usecases/send_otp.dart'; // Login use case
 import '../../presentation/auth/cubit/auth_cubit.dart';
 import '../../presentation/home/cubit/home_cubit.dart';
 import '../../presentation/schedule/cubit/schedule_cubit.dart';
@@ -119,8 +118,7 @@ Future<void> initDependencies({bool firebaseInitialized = false}) async {
   );
 
   // Use cases
-  sl.registerLazySingleton(() => SendOtp(sl()));
-  sl.registerLazySingleton(() => VerifyOtp(sl()));
+  sl.registerLazySingleton(() => Login(sl()));
   sl.registerLazySingleton(() => GetTodayTasks(sl()));
   sl.registerLazySingleton(() => CompleteTask(sl()));
 

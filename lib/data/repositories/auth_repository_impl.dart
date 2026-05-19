@@ -26,25 +26,12 @@ class AuthRepositoryImpl implements AuthRepository {
         _networkInfo = networkInfo;
 
   @override
-  Future<Either<Failure, void>> sendOtp(String email) async {
+  Future<Either<Failure, User>> login(String email, String password) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure());
     }
     try {
-      await _remoteDs.sendOtp(email);
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    }
-  }
-
-  @override
-  Future<Either<Failure, User>> verifyOtp(String email, String otp) async {
-    if (!await _networkInfo.isConnected) {
-      return const Left(NetworkFailure());
-    }
-    try {
-      final result = await _remoteDs.verifyOtp(email, otp);
+      final result = await _remoteDs.login(email, password);
       await _apiClient.saveTokens(result.accessToken, result.refreshToken);
       await _localDs.cacheUser(result.user);
       return Right(result.user);
@@ -55,7 +42,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, void>> refreshToken() async {
-    // Handled by ApiClient interceptor automatically
+    // Handled by ApiClient interceptor automatically.
     return const Right(null);
   }
 
@@ -66,7 +53,7 @@ class AuthRepositoryImpl implements AuthRepository {
         await _remoteDs.logout();
       }
     } catch (_) {
-      // Ignore server errors on logout — clear local state regardless
+      // Ignore server errors on logout — clear local state regardless.
     }
     await _apiClient.clearTokens();
     await _localDs.clearUser();

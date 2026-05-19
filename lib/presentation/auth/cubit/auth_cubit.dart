@@ -20,20 +20,10 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const AuthUnauthenticated());
   }
 
-  /// Send OTP to the given email.
-  Future<void> sendOtp(String email) async {
+  /// Log in with email and password.
+  Future<void> login(String email, String password) async {
     emit(const AuthLoading());
-    final result = await _authRepository.sendOtp(email);
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (_) => emit(AuthOtpSent(email)),
-    );
-  }
-
-  /// Verify OTP for the given email.
-  Future<void> verifyOtp(String email, String otp) async {
-    emit(const AuthLoading());
-    final result = await _authRepository.verifyOtp(email, otp);
+    final result = await _authRepository.login(email, password);
     result.fold(
       (failure) => emit(AuthError(failure.message)),
       (user) => emit(AuthAuthenticated(user)),
@@ -44,11 +34,6 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(const AuthLoading());
     await _authRepository.logout();
-    emit(const AuthUnauthenticated());
-  }
-
-  /// Reset to unauthenticated state (e.g., go back from OTP screen).
-  void resetToLogin() {
     emit(const AuthUnauthenticated());
   }
 }

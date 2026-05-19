@@ -17,14 +17,6 @@ class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
-class AuthOtpSent extends AuthState {
-  final String email;
-  const AuthOtpSent(this.email);
-
-  @override
-  List<Object?> get props => [email];
-}
-
 class AuthAuthenticated extends AuthState {
   final User user;
   const AuthAuthenticated(this.user);

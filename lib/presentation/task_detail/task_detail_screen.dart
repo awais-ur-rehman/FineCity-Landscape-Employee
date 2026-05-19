@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -241,6 +242,10 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
+
+                  // Photo picker
+                  _buildPhotoPicker(context, state),
                   const SizedBox(height: 16),
                 ],
 
@@ -269,16 +274,108 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
             child: AppPrimaryButton(
               label: AppStrings.markDone,
               isLoading: state.isCompleting,
-              onPressed: () {
-                final notes = _notesController.text.trim();
-                context.read<TaskDetailCubit>().markComplete(
-                      widget.taskId,
-                      notes: notes.isNotEmpty ? notes : null,
-                    );
-              },
+              onPressed: state.isCompleting
+                  ? null
+                  : () {
+                      final notes = _notesController.text.trim();
+                      context.read<TaskDetailCubit>().markComplete(
+                            widget.taskId,
+                            notes: notes.isNotEmpty ? notes : null,
+                          );
+                    },
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildPhotoPicker(BuildContext context, TaskDetailLoaded state) {
+    final photos = state.selectedPhotoPaths;
+    final canAdd = photos.length < 3;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Add Photos (${photos.length}/3)',
+                style: AppTypography.body2
+                    .copyWith(color: AppColors.textSecondary),
+              ),
+              if (canAdd)
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.camera_alt_outlined,
+                          color: AppColors.primary),
+                      onPressed: () => context
+                          .read<TaskDetailCubit>()
+                          .pickPhotos(fromCamera: true),
+                      tooltip: 'Camera',
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.photo_library_outlined,
+                          color: AppColors.primary),
+                      onPressed: () => context
+                          .read<TaskDetailCubit>()
+                          .pickPhotos(fromCamera: false),
+                      tooltip: 'Gallery',
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          if (photos.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 80,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: photos.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 8),
+                itemBuilder: (context, i) => Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        File(photos[i]),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      top: 2,
+                      right: 2,
+                      child: GestureDetector(
+                        onTap: () =>
+                            context.read<TaskDetailCubit>().removePhoto(i),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.close,
+                              size: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
@@ -405,14 +502,14 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
     switch (type) {
       case CareType.watering:
         return 'Watering';
-      case CareType.fertilizer:
-        return 'Fertilizer';
+      case CareType.fertilizing:
+        return 'Fertilizing';
       case CareType.pruning:
         return 'Pruning';
       case CareType.repotting:
         return 'Repotting';
-      case CareType.general:
-        return 'General Care';
+      case CareType.pestControl:
+        return 'Pest Control';
     }
   }
 }

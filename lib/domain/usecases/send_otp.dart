@@ -1,14 +1,15 @@
 import 'package:dartz/dartz.dart';
 import '../../core/errors/failures.dart';
+import '../entities/user.dart';
 import '../repositories/auth_repository.dart';
 
-/// Sends an OTP to the given email address.
-class SendOtp {
+/// Logs in with email and password.
+class Login {
   final AuthRepository _repository;
 
-  const SendOtp(this._repository);
+  const Login(this._repository);
 
-  Future<Either<Failure, void>> call(String email) {
-    return _repository.sendOtp(email);
+  Future<Either<Failure, User>> call(String email, String password) {
+    return _repository.login(email, password);
   }
 }

@@ -1,15 +1,3 @@
-import 'package:dartz/dartz.dart';
-import '../../core/errors/failures.dart';
-import '../entities/user.dart';
-import '../repositories/auth_repository.dart';
-
-/// Verifies OTP and returns the authenticated user.
-class VerifyOtp {
-  final AuthRepository _repository;
-
-  const VerifyOtp(this._repository);
-
-  Future<Either<Failure, User>> call(String email, String otp) {
-    return _repository.verifyOtp(email, otp);
-  }
-}
+// This file is intentionally kept as a stub.
+// OTP authentication was replaced with email + password login.
+// Preserved to avoid breaking existing imports until full cleanup.

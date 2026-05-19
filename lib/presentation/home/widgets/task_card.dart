@@ -127,14 +127,14 @@ class TaskCard extends StatelessWidget {
     switch (task.careType) {
       case CareType.watering:
         return 'Watering';
-      case CareType.fertilizer:
-        return 'Fertilizer';
+      case CareType.fertilizing:
+        return 'Fertilizing';
       case CareType.pruning:
         return 'Pruning';
       case CareType.repotting:
         return 'Repotting';
-      case CareType.general:
-        return 'General';
+      case CareType.pestControl:
+        return 'Pest Control';
     }
   }
 }

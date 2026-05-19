@@ -10,8 +10,12 @@ abstract class TaskRepository {
   /// Fetches a single task by ID.
   Future<Either<Failure, CareTask>> getTaskById(String id);
 
-  /// Marks a task as completed with optional notes.
-  Future<Either<Failure, CareTask>> completeTask(String id, {String? notes});
+  /// Marks a task as completed with optional notes and photos.
+  Future<Either<Failure, CareTask>> completeTask(
+    String id, {
+    String? notes,
+    List<String>? photoPaths,
+  });
 
   /// Fetches tasks for a specific date.
   Future<Either<Failure, List<CareTask>>> getTasksForDate(DateTime date);

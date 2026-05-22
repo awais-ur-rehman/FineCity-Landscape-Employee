@@ -26,15 +26,18 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(
           fontFamily: 'Poppins',
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
       ),
       cardTheme: CardThemeData(
         color: AppColors.surface,
-        elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(color: AppColors.border, width: 1),
+        ),
         margin: EdgeInsets.zero,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -43,7 +46,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           textStyle: AppTypography.button,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           elevation: 0,
         ),
       ),
@@ -52,7 +55,7 @@ class AppTheme {
           foregroundColor: AppColors.primary,
           textStyle: AppTypography.button.copyWith(color: AppColors.primary),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           side: const BorderSide(color: AppColors.primary),
         ),
       ),
@@ -61,19 +64,19 @@ class AppTheme {
         fillColor: AppColors.surface,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(color: AppColors.statusOverdue),
         ),
         hintStyle: AppTypography.body1.copyWith(color: AppColors.disabled),
@@ -84,12 +87,19 @@ class AppTheme {
         unselectedItemColor: AppColors.textSecondary,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
-        selectedLabelStyle: TextStyle(fontFamily: 'Poppins', fontSize: 12, fontWeight: FontWeight.w500),
+        selectedLabelStyle: TextStyle(fontFamily: 'Poppins', fontSize: 12, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontFamily: 'Poppins', fontSize: 12),
       ),
       dividerTheme: const DividerThemeData(color: AppColors.border, thickness: 1),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+      chipTheme: ChipThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );

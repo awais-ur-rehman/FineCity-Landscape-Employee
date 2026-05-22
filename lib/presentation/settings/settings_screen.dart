@@ -223,7 +223,7 @@ class _SettingsBody extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () => _confirmLogout(context),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Row(
@@ -290,7 +290,7 @@ class _SectionCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

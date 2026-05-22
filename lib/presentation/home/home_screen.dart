@@ -109,18 +109,21 @@ class _HomeScreenState extends State<HomeScreen> {
         state is HomeLoaded ? state.completedCount : 0;
     final total = state is HomeLoaded ? state.totalCount : 0;
 
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final hPad = screenWidth < 380 ? 16.0 : 20.0;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$_greeting,',
-                  style: AppTypography.body1.copyWith(
+                  _greeting,
+                  style: AppTypography.caption.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -129,8 +132,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: AppTypography.h2.copyWith(
                     color: AppColors.textPrimary,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   today,
                   style: AppTypography.caption.copyWith(
@@ -140,7 +145,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          DailyProgress(completed: completed, total: total),
+          const SizedBox(width: 12),
+          DailyProgress(
+            completed: completed,
+            total: total,
+            size: screenWidth < 380 ? 68 : 76,
+          ),
         ],
       ),
     );

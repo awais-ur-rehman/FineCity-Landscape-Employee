@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'app.dart';
 import 'core/di/injection.dart';
@@ -10,6 +11,9 @@ import 'core/services/sync_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment configuration
+  await dotenv.load(fileName: '.env');
 
   // Initialize timezone data for scheduled notifications
   tz.initializeTimeZones();

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/api_endpoints.dart';
@@ -12,12 +11,8 @@ class ApiClient {
   final SharedPreferences _prefs;
 
   ApiClient(this._prefs) {
-    final baseUrl = Platform.isAndroid
-        ? ApiEndpoints.baseUrl
-        : ApiEndpoints.baseUrlIos;
-
     dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: ApiEndpoints.baseUrl,
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
       headers: {'Content-Type': 'application/json'},
@@ -89,12 +84,8 @@ class _AuthInterceptor extends Interceptor {
     }
 
     try {
-      final baseUrl = Platform.isAndroid
-          ? ApiEndpoints.baseUrl
-          : ApiEndpoints.baseUrlIos;
-
       final res = await Dio().post(
-        '$baseUrl${ApiEndpoints.refreshToken}',
+        '${ApiEndpoints.baseUrl}${ApiEndpoints.refreshToken}',
         data: {'refreshToken': refresh},
       );
 

@@ -40,10 +40,10 @@ class TaskSection extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
               decoration: BoxDecoration(
-                color: badgeColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
+                color: badgeColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
                 '$count',

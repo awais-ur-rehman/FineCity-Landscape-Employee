@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 
-/// Icon + color for each care type.
+/// Square icon container per care type.
 class CareTypeIcon extends StatelessWidget {
   final String careType;
   final double size;
@@ -14,11 +14,11 @@ class CareTypeIcon extends StatelessWidget {
     final icon = _iconFor(careType);
 
     return Container(
-      width: size + 12,
-      height: size + 12,
+      width: size + 14,
+      height: size + 14,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Icon(icon, color: color, size: size),
     );
@@ -29,11 +29,16 @@ class CareTypeIcon extends StatelessWidget {
       case 'watering':
         return Icons.water_drop;
       case 'fertilizer':
+      case 'fertilizing':
         return Icons.eco;
       case 'pruning':
         return Icons.content_cut;
       case 'repotting':
         return Icons.yard;
+      case 'pestControl':
+      case 'pest_control':
+      case 'pestcontrol':
+        return Icons.bug_report;
       case 'general':
       default:
         return Icons.spa;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/constants/asset_paths.dart';
 import '../../core/theme/app_colors.dart';
 import '../auth/cubit/auth_cubit.dart';
 
@@ -27,12 +26,34 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              AssetPaths.logo,
-              width: 200,
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Icon(
+                Icons.local_florist,
+                color: Colors.white,
+                size: 52,
+              ),
             ),
-            const SizedBox(height: 32),
-            const CircularProgressIndicator(color: Colors.white),
+            const SizedBox(height: 24),
+            const Text(
+              'Finecity Landscape',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
+              ),
+            ),
+            const SizedBox(height: 48),
+            const CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
+            ),
           ],
         ),
       ),

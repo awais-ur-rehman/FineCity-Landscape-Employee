@@ -133,7 +133,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
@@ -172,7 +172,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,7 +205,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,7 +298,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,7 +362,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.black54,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(Icons.close,
                               size: 16, color: Colors.white),
@@ -384,7 +384,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
@@ -394,7 +394,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
             height: 56,
             decoration: BoxDecoration(
               color: AppColors.primaryLight.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.local_florist,
@@ -445,7 +445,7 @@ class _TaskDetailBodyState extends State<_TaskDetailBody> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

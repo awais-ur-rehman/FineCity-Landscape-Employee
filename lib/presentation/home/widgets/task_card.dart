@@ -6,7 +6,7 @@ import '../../../domain/entities/care_task.dart';
 import '../../shared/widgets/care_type_icon.dart';
 import '../../shared/widgets/status_badge.dart';
 
-/// Task card with colored left border, batch info, and quick actions.
+/// Task card — flat design with care type icon anchor. No left border.
 class TaskCard extends StatelessWidget {
   final CareTask task;
   final bool isCompleting;
@@ -31,84 +31,108 @@ class TaskCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border(
-            left: BorderSide(color: careColor, width: 4),
-          ),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.border, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 6,
               offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top row: batch name + status badge
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      task.batchName ?? 'Unknown Batch',
-                      style: AppTypography.body1.copyWith(
-                        fontWeight: FontWeight.w600,
+              // Care type icon — visual anchor on left
+              CareTypeIcon(careType: task.careType.name, size: 20),
+              const SizedBox(width: 12),
+
+              // Main content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top: batch name + status badge
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            task.batchName ?? 'Unknown Batch',
+                            style: AppTypography.body2.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        StatusBadge(status: _displayStatus),
+                      ],
+                    ),
+
+                    // Zone + location
+                    if (task.zone != null || task.location != null) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        [task.zone, task.location]
+                            .where((s) => s != null)
+                            .join(' · '),
+                        style: AppTypography.caption,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  StatusBadge(status: _displayStatus),
-                ],
-              ),
-              const SizedBox(height: 4),
-              // Zone + location
-              if (task.zone != null || task.location != null)
-                Text(
-                  [task.zone, task.location]
-                      .where((s) => s != null)
-                      .join(' • '),
-                  style: AppTypography.caption.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              const SizedBox(height: 8),
-              // Bottom row: care type + time + quick done
-              Row(
-                children: [
-                  CareTypeIcon(careType: task.careType.name, size: 18),
-                  const SizedBox(width: 8),
-                  Text(
-                    _careTypeLabel,
-                    style: AppTypography.body2.copyWith(color: careColor),
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.access_time,
-                    size: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    timeStr,
-                    style: AppTypography.body2.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  if (showQuickDone) ...[
-                    const SizedBox(width: 12),
-                    _QuickDoneButton(
-                      isLoading: isCompleting,
-                      onPressed: onQuickDone,
+                    ],
+
+                    const SizedBox(height: 8),
+
+                    // Bottom: care type label + time + done button
+                    Row(
+                      children: [
+                        // Care type label chip
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: careColor.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            _careTypeLabel,
+                            style: AppTypography.overline.copyWith(
+                              color: careColor,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(Icons.schedule,
+                            size: 13, color: AppColors.textSecondary),
+                        const SizedBox(width: 3),
+                        Text(
+                          timeStr,
+                          style: AppTypography.caption.copyWith(
+                              color: AppColors.textSecondary),
+                        ),
+                        if (showQuickDone) ...[
+                          const SizedBox(width: 10),
+                          _QuickDoneButton(
+                            isLoading: isCompleting,
+                            onPressed: onQuickDone,
+                          ),
+                        ],
+                      ],
                     ),
                   ],
-                ],
+                ),
               ),
             ],
           ),
@@ -148,27 +172,29 @@ class _QuickDoneButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 32,
+      height: 28,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
           ),
+          elevation: 0,
         ),
         child: isLoading
             ? const SizedBox(
-                width: 16,
-                height: 16,
+                width: 14,
+                height: 14,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   color: Colors.white,
                 ),
               )
-            : const Text('Done', style: TextStyle(fontSize: 13)),
+            : const Text('Done',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
       ),
     );
   }

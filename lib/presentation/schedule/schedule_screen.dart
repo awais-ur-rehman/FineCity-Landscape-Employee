@@ -153,7 +153,7 @@ class _WeekDateSelector extends StatelessWidget {
         final startDate = today.subtract(const Duration(days: 3));
 
         return SizedBox(
-          height: 80,
+          height: 76,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -167,14 +167,14 @@ class _WeekDateSelector extends StatelessWidget {
                 onTap: () =>
                     context.read<ScheduleCubit>().selectDate(date),
                 child: Container(
-                  width: 52,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 50,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.primary : AppColors.surface,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(6),
                     border: isToday && !isSelected
                         ? Border.all(color: AppColors.primary, width: 1.5)
-                        : null,
+                        : Border.all(color: AppColors.border, width: 1),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
@@ -290,7 +290,7 @@ class _CareTypeFilter extends StatelessWidget {
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(4),
           side: BorderSide(
             color: isSelected ? chipColor : AppColors.border,
           ),

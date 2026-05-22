@@ -1,10 +1,12 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 /// API endpoint paths and base URL configuration.
+/// Base URL is loaded from the .env file (API_BASE_URL key).
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const baseUrl =
-      'http://192.168.100.99:3000/api/v1'; // Android emulator
-  static const baseUrlIos = 'http://192.168.100.99:3000/api/v1';
+  static String get baseUrl =>
+      dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000/api/v1';
 
   // Auth
   static const login = '/auth/login';

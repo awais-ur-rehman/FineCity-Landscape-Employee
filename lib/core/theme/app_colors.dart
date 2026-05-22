@@ -24,7 +24,7 @@ class AppColors {
   static const statusMissed = Color(0xFFB71C1C);
 
   // Neutrals
-  static const background = Color(0xFFF5F7F5);
+  static const background = Color(0xFFFFF6F6);
   static const surface = Color(0xFFFFFFFF);
   static const textPrimary = Color(0xFF1B1B1B);
   static const textSecondary = Color(0xFF6B6B6B);
@@ -37,11 +37,16 @@ class AppColors {
       case 'watering':
         return careWatering;
       case 'fertilizer':
+      case 'fertilizing':
         return careFertilizer;
       case 'pruning':
         return carePruning;
       case 'repotting':
         return careRepotting;
+      case 'pestControl':
+      case 'pest_control':
+      case 'pestcontrol':
+        return statusOverdue;
       default:
         return careGeneral;
     }

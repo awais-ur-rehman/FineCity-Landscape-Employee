@@ -14,7 +14,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../../domain/usecases/complete_task.dart';
 import '../../domain/usecases/get_today_tasks.dart';
-import '../../domain/usecases/send_otp.dart'; // Login use case
+import '../../domain/usecases/login.dart';
 import '../../presentation/auth/cubit/auth_cubit.dart';
 import '../../presentation/home/cubit/home_cubit.dart';
 import '../../presentation/schedule/cubit/schedule_cubit.dart';
@@ -102,18 +102,6 @@ Future<void> initDependencies({bool firebaseInitialized = false}) async {
       prefs: sl(),
       connectivity: sl(),
       notificationService: sl(),
-    ),
-  );
-
-  // Sync service
-  sl.registerLazySingleton<SyncService>(
-    () => SyncService(
-      apiClient: sl(),
-      localDs: sl(),
-      networkInfo: sl(),
-      prefs: sl(),
-      connectivity: sl(),
-      localNotifications: sl(),
     ),
   );
 
